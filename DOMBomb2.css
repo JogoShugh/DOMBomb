@@ -1,0 +1,19 @@
+/* CSS declarations go here */
+.player {
+    background: lightgreen;
+    border: 2px inset darkgreen;
+    height: 575px;    
+}
+
+.playerHtml {
+    overflow: scroll;
+    width: 100%;
+}
+
+.editor {
+    width: 98%;
+    height: 250px;
+    text-align: left;
+    font-size: 150%;
+    display: none;
+}

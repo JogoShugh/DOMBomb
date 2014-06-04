@@ -1,0 +1,46 @@
+<head>
+  <title>Refaced by CoderDojo Ponce Springs</title>
+</head>
+
+<body>
+  {{> account}}
+  {{> players}}
+</body>
+
+<template name="account">
+  <button class="btn btn-primary signUp">Sign up</button> or <button class="btn">Sign in</button>
+</template>
+
+<template name="playerEditor">
+  <input id='userName' placeholder="User name" />
+  <br />
+  <input id='password' type='password' placeholder="Password" />
+  <br />
+  <input id='passwordConfirm' type='password' placeholder="Confirm Password" />
+  <br />
+  <input id='backgroundColor' type='color' />
+</template>
+
+<template name="players">
+    <div class="row">
+	    {{#each players}}
+	      {{> player}}
+	    {{/each}}
+    </div>
+</template>
+
+<template name="player">
+  <div class="player col-lg-4">
+      <h4>{{userName}}</h4>
+      <hr />
+      <iframe class='playerHtml' id="{{this._id}}Html">{{playerHtml}}</iframe>      
+      <br />
+      {{> aceEditor}}
+  </div>
+</template>
+
+<template name="aceEditor">
+  <button class="edit">Edit</button>&nbsp;<button class="save">Save</button>
+  &nbsp;<button class="update">Update</button> 
+  <div class="editor" id="{{this._id}}Editor">{{this.html}}</div>
+</template>
