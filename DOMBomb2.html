@@ -40,7 +40,10 @@
 </template>
 
 <template name="aceEditor">
-  <button class="edit">Edit</button>&nbsp;<button class="save">Save</button>
-  &nbsp;<button class="update">Update</button> 
+  {{#if isDirty}}
+    <button class="btn btn-success save">Save Changes</button><br />
+  {{else}}
+    <button class="btn btn-success save" disabled="disabled">Save Changes</button><br />
+  {{/if}}
   <div class="editor" id="{{this._id}}Editor">{{this.html}}</div>
 </template>

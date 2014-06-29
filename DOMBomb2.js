@@ -7,10 +7,14 @@ function playerUpdateById(id, obj) {
   }
 }
 
-if (Meteor.isClient) {
-  function changeDetectConfigure(doc) {
+if (Meteor.isClient) {  
+  function changeDetectConfigure(id, doc) {
     var insertedNodes = [];
     var observer = new WebKitMutationObserver(function(mutations) {
+      var player = Players.findOne({_id:id});
+      if (player) {
+        Players.update(player._id, { $set: {isDirty:true} });
+      }
       mutations.forEach(function(mutation) {
         for (var i = 0; i < mutation.addedNodes.length; i++)
           insertedNodes.push(mutation.addedNodes[i]);
@@ -61,6 +65,7 @@ if (Meteor.isClient) {
         userName: userName,
         password: password,
         backgroundColor: backgroundColor,
+        isDirty: false,
         html: "<!doctype HTML>\n<html>\n\t<head><style>body { background: " + backgroundColor + "}</style></head>\n\t<body>\n\t\tHello, from " + userName + "\n\t</body>\n</html>"
       }
       Players.insert(player);
@@ -77,9 +82,9 @@ if (Meteor.isClient) {
       var document = playerHtml.contentDocument;
       var serializer = new XMLSerializer();
       var content = serializer.serializeToString(document);
-      playerUpdateById(this._id, {html:content});
-    },
-    'click button.update' : function(evt, template) {
+      playerUpdateById(this._id, {html:content, isDirty:false});
+    }
+    /*,'click button.update' : function(evt, template) {
       var editor = ace.edit(this._id + "Editor");
       var code = editor.getSession().getValue();
       var playerHtml = template.find(".playerHtml");
@@ -88,7 +93,7 @@ if (Meteor.isClient) {
       iframeDoc.write(code);
       iframeDoc.close();    
       playerUpdateById(this._id, {html:code});
-    }    
+    }*/   
   });
 
   Template.player.helpers({
@@ -100,7 +105,7 @@ if (Meteor.isClient) {
         iframeDoc.open();
         iframeDoc.write(this.html);
         iframeDoc.close();
-        changeDetectConfigure(iframeDoc);
+        changeDetectConfigure(this._id, iframeDoc);
       }
     }
   });
@@ -111,7 +116,7 @@ if (Meteor.isClient) {
     iframeDoc.open();
     iframeDoc.write(this.data.html);
     iframeDoc.close();
-    changeDetectConfigure(iframeDoc.body);
+    changeDetectConfigure(this.data._id, iframeDoc.body);
     console.log("Rendered");
   };
 
