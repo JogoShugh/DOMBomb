@@ -1,13 +1,41 @@
+
 /* CSS declarations go here */
+ #login {
+    width: 200px;
+    font-weight: bold;
+}
+
+.playerContainer {
+}
+
+.playerContainerModal {
+	height: 100%;
+}
+
+
 .player {
-    background: lightgreen;
-    border: 2px inset darkgreen;
-    height: 575px;    
+	padding: 10px;
 }
 
 .playerHtml {
     overflow: scroll;
     width: 100%;
+    border: 5px solid darkgray;
+}
+
+.playerHtmlModal {
+    overflow: scroll;
+    width: 100%;
+    height: 50%;
+    border: 5px solid darkgray;
+}
+
+.panel-primary {
+	height: 100%;
+}
+
+.panel-body {
+	height: 100%;
 }
 
 .editor {
@@ -16,4 +44,20 @@
     text-align: left;
     font-size: 150%;
     display: none;
+}
+
+.modal-dialog {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.modal-content {
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+}
+
+.helpHidden {
+	display: none;
 }

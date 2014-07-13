@@ -14,13 +14,12 @@ if (Meteor.isClient) {
       var player = Players.findOne({_id:id});
       if (player) {
         Players.update(player._id, { $set: {isDirty:true} });
+        $(".saveChanges").removeAttr("disabled");
       }
       mutations.forEach(function(mutation) {
         for (var i = 0; i < mutation.addedNodes.length; i++)
-          insertedNodes.push(mutation.addedNodes[i]);
-          console.log(mutation);
+          insertedNodes.push(mutation.addedNodes[i]);          
       });
-      console.log(insertedNodes);         
     });
     observer.observe(doc, { 
       childList: true,
@@ -40,7 +39,7 @@ if (Meteor.isClient) {
 
   Template.account.rendered = function() {
     var editorDialog = {
-      template: Template.playerEditor,
+      template: Template.playerSignup,
       title: "Create your CoderDojo Account!",
       buttons: {
         "cancel": {
@@ -76,6 +75,8 @@ if (Meteor.isClient) {
     return Players.find({}, {sort: {computerName: 1}, fields: { 'computerSecret' : 0}});
   };
 
+  var pageEditorSelected = null;
+
   Template.player.events({
     'click button.save' : function(evt, template) {
       var playerHtml = template.find(".playerHtml");
@@ -83,17 +84,42 @@ if (Meteor.isClient) {
       var serializer = new XMLSerializer();
       var content = serializer.serializeToString(document);
       playerUpdateById(this._id, {html:content, isDirty:false});
+    },
+    'click button.fullScreen' : function(evt, template) {
+      Template.pageEditor.user = this;
+      var editorDialog = {
+        template: Template.pageEditor,
+        title: "Edit page",
+        modalDialogClass: "pageEditor-modal-dialog",
+        modalBodyClass: "pageEditor-modal-body",
+        buttons: {
+          "cancel": {
+            class: 'btn-danger',
+            label: 'Cancel'
+          },
+          "ok": {
+            closeModalOnClick: false, // if this is false, dialog doesnt close automatically on click
+            class: 'btn-info saveChanges',
+            label: 'Save changes'
+          }
+        }
+      }
+
+      var fullScreen = ReactiveModal.initDialog(editorDialog);
+      var that = this;
+
+      fullScreen.buttons.ok.on('click', function(button){
+        var playerHtml = pageEditorSelected.find(".playerHtmlModal");
+        var document = playerHtml.contentDocument;
+        var serializer = new XMLSerializer();
+        var content = serializer.serializeToString(document);
+        playerUpdateById(that._id, {html:content, isDirty:false}); 
+      });
+
+      fullScreen.show();
+
+      $(".saveChanges").attr("disabled", "disabled");
     }
-    /*,'click button.update' : function(evt, template) {
-      var editor = ace.edit(this._id + "Editor");
-      var code = editor.getSession().getValue();
-      var playerHtml = template.find(".playerHtml");
-      var iframeDoc = playerHtml.contentWindow.document;
-      iframeDoc.open();
-      iframeDoc.write(code);
-      iframeDoc.close();    
-      playerUpdateById(this._id, {html:code});
-    }*/   
   });
 
   Template.player.helpers({
@@ -111,13 +137,13 @@ if (Meteor.isClient) {
   });
 
   Template.player.rendered = function() {
+    var player = this.find(".player");    
     var myIframe = this.find(".playerHtml");
     var iframeDoc = myIframe.contentWindow.document;
     iframeDoc.open();
     iframeDoc.write(this.data.html);
     iframeDoc.close();
     changeDetectConfigure(this.data._id, iframeDoc.body);
-    console.log("Rendered");
   };
 
   Template.aceEditor.rendered = function() {    
@@ -127,20 +153,37 @@ if (Meteor.isClient) {
     editor.setHighlightActiveLine(true);
   };
 
-  Template.aceEditor.events({
-    'click button.edit': function(evt) {
-      var editor = $("#" + this._id + "Editor");
-      editor.show();
+  Template.pageEditor.rendered = function() {
+    pageEditorSelected = this;
+    var player = this.find(".player");    
+    var myIframe = this.find(".playerHtmlModal");
+    var iframeDoc = myIframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(Template.pageEditor.user.html);
+    iframeDoc.close();
+    changeDetectConfigure(Template.pageEditor.user._id, iframeDoc.body);
+  };
+
+  Session.set("helpVisible", true);
+
+  Template.pageEditor.helpers({
+    'leftCol': function() {
+      console.log(Session.get("helpVisible"));
+      return Session.get("helpVisible") ? 'col-lg-3' : 'helpHidden';
     },
-    'click button.save': function(evt) {
-      var editor = $("#" + this._id + "Editor");
-      editor.show();
+    'rightCol': function() {
+      return Session.get("helpVisible") ? 'col-lg-9' : 'col-lg-12';
+    }
+  });
+
+  Template.pageEditor.events({
+    'click button.helpHide' : function(evt, template) {
+      var helpVisble = Session.get("helpVisible");
+      helpVisible = !Template.pageEditor.helpVisible;
+      Session.get("helpVisible", helpVisible);
     }
   });  
-
 }
-
-var insertComputers = false;
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
