@@ -15,8 +15,8 @@
       },
       "reactive-modal": {
         "git": "https://github.com/pahans/reactive-modal.git",
-        "tag": "v0.1.2",
-        "commit": "3ed9319c991c1567b4e9b6a85d33c6d4571aacb2"
+        "tag": "v0.1.3",
+        "commit": "4ec97d8558136730b6178e3f5e470689da6b36a5"
       },
       "ace-embed": {
         "git": "https://github.com/stuartfenton/meteor-ace-embed.git",
@@ -25,13 +25,13 @@
       },
       "jqueryui": {
         "git": "https://github.com/mizzao/meteor-jqueryui.git",
-        "tag": "v1.10.4",
-        "commit": "c75906fc9e1e19abf1ad5b2963925122ff8a0336"
+        "tag": "v1.11.0",
+        "commit": "06194edc0bdbb28c34b3a656bf9cb6a32718b44e"
       },
       "build-fetcher": {
         "git": "https://github.com/mizzao/meteor-build-fetcher.git",
-        "tag": "v0.1.0",
-        "commit": "e3813b1fc7f5c576e8e1fa4c51ae6f4687780a35"
+        "tag": "v0.2.0",
+        "commit": "5202ca83277860d798c6ff2ef1d8fe1bce007d0f"
       }
     }
   }
